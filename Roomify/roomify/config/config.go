@@ -12,18 +12,39 @@ import (
 
 var DB *sql.DB
 
-func ConnectDB() {
+type Config struct {
+	JWTKey string
+	DBHost string
+	DBPort string
+	DBUser string
+	DBPass string
+	DBName string
+}
+
+func LoadConfig() *Config {
 	err := godotenv.Load()
-	if err != nil{
-		log.Fatal("failed loading env", err)
+	if err != nil {
+		log.Println("Warning: .env file not found")
 	}
+
+	return &Config{
+		JWTKey: os.Getenv("JWT_KEY"),
+		DBHost: os.Getenv("DB_HOST"),
+		DBPort: os.Getenv("DB_PORT"),
+		DBUser: os.Getenv("DB_USER"),
+		DBPass: os.Getenv("DB_PASSWORD"),
+		DBName: os.Getenv("DB_NAME"),
+	}
+}
+
+func ConnectDB(cfg *Config) {
 	dsn := fmt.Sprintf(
 		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_PORT"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
+		cfg.DBHost,
+		cfg.DBPort,
+		cfg.DBUser,
+		cfg.DBPass,
+		cfg.DBName,
 	)
 
 	db, err := sql.Open("postgres", dsn)
@@ -37,6 +58,4 @@ func ConnectDB() {
 	}
 
 	DB = db
-	fmt.Println("berhasil connect database")
-
 }

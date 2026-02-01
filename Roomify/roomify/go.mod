@@ -3,9 +3,17 @@ module github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify
 go 1.24.1
 
 require (
+	github.com/gofiber/fiber v1.14.6
+	github.com/golang-jwt/jwt v3.2.2+incompatible
+)
+
+require (
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/gofiber/fiber/v2 v2.52.10 // indirect
+	github.com/gofiber/utils v0.0.10 // indirect
+	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/schema v1.1.0 // indirect
 	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/lib/pq v1.10.9 // indirect
@@ -16,5 +24,6 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.51.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
-	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/crypto v0.47.0
+	golang.org/x/sys v0.40.0 // indirect
 )
