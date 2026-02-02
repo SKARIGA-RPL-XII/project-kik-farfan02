@@ -18,49 +18,6 @@ func NewUserRepository(db *sql.DB) *UserRepository {
 	return &UserRepository{DB: db}
 }
 
-func (r *UserRepository) Login(email string) (*models.User, error) {
-	user := &models.User{}
-	query := `
-		SELECT id, name, email, password, role, department_id, created_at 
-		FROM users 
-		WHERE email = $1
-	`
-
-	var password string
-	var departmentID sql.NullInt64
-	var createdAt sql.NullTime
-
-	err := r.DB.QueryRow(query, email).Scan(
-		&user.ID,
-		&user.Name,
-		&user.Email,
-		&password,
-		&user.Role,
-		&departmentID,
-		&createdAt,
-	)
-
-	user.Pass = strings.Trim(strings.TrimSpace(password), `"`)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, errors.New("email tidak ditemukan")
-		}
-		return nil, fmt.Errorf("database error: %w", err)
-	}
-
-	user.Pass = password
-	
-	if departmentID.Valid {
-		user.DepartmentID = int(departmentID.Int64)
-	}
-	
-	if createdAt.Valid {
-		user.CreatedAt = createdAt.Time
-	}
-
-	return user, nil
-}
 
 func (r *UserRepository) CreateUser(user *models.User) error {
 	query := `INSERT INTO users (name, email, password, role, department_id, created_at)

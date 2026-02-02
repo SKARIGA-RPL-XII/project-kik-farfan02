@@ -26,6 +26,10 @@ func main() {
 	deptService := service.NewDeptService(*deptRepo)
 	deptHandler := handler.NewDeptHandler(*deptService)
 
+	authRepo := repository.NewAuthRepository(config.DB)
+	authService := service.NewAuthService(*authRepo, cfg)
+	authHandler := handler.NewAuthHandler(*authService)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -37,7 +41,7 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	router.Router(app, userHandler, deptHandler)
+	router.Router(app, userHandler, deptHandler, authHandler)
 
 	log.Fatal(app.Listen("0.0.0.0:3000"))
 }

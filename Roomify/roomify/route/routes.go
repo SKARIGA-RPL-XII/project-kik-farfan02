@@ -10,14 +10,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handler.DeptHandler) {
-	// Load config sekali untuk middleware
+func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handler.DeptHandler, authHandler *handler.AuthHandler) {
 	cfg := config.LoadConfig()
+
+	a := app.Group("/auth")
+
+	a.Post("/login", authHandler.Login)
+	a.Post("/change-password", middleware.AuthMiddleware(cfg), authHandler.ChangePassword)
+	a.Post("/logout", middleware.AuthMiddleware(cfg), authHandler.Logout)
 
 	r := app.Group("/v1")
 
-	// Public routes
-	r.Post("/login", userhandler.Login)
 	r.Post("/user", userhandler.CreateUser)
 	r.Get("/user/search", userhandler.GetUsers)
 	r.Put("/user-put/:id", userhandler.UpdateUserHandler)
