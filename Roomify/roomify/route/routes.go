@@ -26,7 +26,7 @@ func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handl
 	d.Post("/dept-create", depthandler.InputDepartment)
 	d.Get("/dept-get", depthandler.GetAllDepartment)
 	d.Delete("/dept-del", depthandler.DeleteDepartment)
-	d.Put("/dept-put", depthandler.UpdateDepartment)
+	d.Put("/dept-put/:id", depthandler.UpdateDepartment)
 
 
 

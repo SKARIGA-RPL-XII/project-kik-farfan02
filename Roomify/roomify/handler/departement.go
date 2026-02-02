@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"strconv"
-
 	
 	"github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/models"
 	"github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/service"
@@ -89,8 +87,8 @@ func (h *DeptHandler) GetAllDepartment(c *fiber.Ctx) error {
 }
 
 func (h *DeptHandler) UpdateDepartment(c *fiber.Ctx) error {
-	id, err := strconv.Atoi(c.Params("id"))
-	if err != nil {
+	id, err := c.ParamsInt("id")
+	if err != nil || id <= 0{
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Success: false,
 			Code:    fiber.StatusBadRequest,
@@ -99,8 +97,14 @@ func (h *DeptHandler) UpdateDepartment(c *fiber.Ctx) error {
 		})
 	}
 
-	dpt := &models.Departement{}
-	if err := c.BodyParser(dpt); err != nil {
+	type UpdateRequest struct {
+		Nama_dtm string `json:"nama_dtm"`
+		Code     string `json:"code"`
+	}
+
+	load := new(UpdateRequest)
+
+	if err := c.BodyParser(load); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Success: false,
 			Code:    fiber.StatusBadRequest,
@@ -109,14 +113,21 @@ func (h *DeptHandler) UpdateDepartment(c *fiber.Ctx) error {
 		})
 	}
 
-	
-	if dpt.Nama_dtm == "" || dpt.Code == "" {
+		if load.Nama_dtm == "" || load.Code == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Success: false,
 			Code:    fiber.StatusBadRequest,
 			Message: "semua field wajib diisi",
 			Error:   "validation failed",
 		})
+	}
+
+	
+	
+	dpt := &models.Departement{
+		ID: id,
+		Nama_dtm: load.Nama_dtm,
+		Code: load.Code,
 	}
 
 	err = h.deptService.UpdateDepartment(id, dpt)
@@ -129,6 +140,7 @@ func (h *DeptHandler) UpdateDepartment(c *fiber.Ctx) error {
 				Error:   err.Error(),
 			})
 		}
+
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Success: false,
 			Code:    fiber.StatusInternalServerError,

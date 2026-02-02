@@ -71,10 +71,10 @@ func (v *DeptRepository) GetAllDepartment() ([]models.Departement, error) {
 }
 
 
-func (v *DeptRepository) UpdateDepartment(id int, dpt *models.Departement) error {
+func (v *DeptRepository) UpdateDepartment( dpt *models.Departement) error {
 	query := `UPDATE department SET nama_dtm = $1, code = $2 WHERE id = $3`
 
-	result, err := v.DB.Exec(query, dpt.Nama_dtm, dpt.Code, id)
+	result, err := v.DB.Exec(query, dpt.Nama_dtm, dpt.Code, dpt.ID)
 	if err != nil {
 		return fmt.Errorf("gagal update department: %w", err)
 	}

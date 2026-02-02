@@ -55,7 +55,7 @@ func (s *DeptService) UpdateDepartment(id int, dpt *models.Departement) error {
 		return errors.New("department tidak ditemukan")
 	}
 
-	return s.deptRepo.UpdateDepartment(id, dpt)
+	return s.deptRepo.UpdateDepartment(dpt)
 }
 
 func (s *DeptService) DeleteDepartment(id int) error {
