@@ -76,3 +76,46 @@ func (s *UserService) CreateUser(user *models.User) error {
 	return s.userRepo.CreateUser(user)
 }
 
+func (s *UserService) GetUsers(filter models.UserFilter) ([]models.User, error) {
+	return s.userRepo.GetUsers(filter)
+}
+
+func (s *UserService) UpdateUser(id int, userData *models.User) error {
+	_, err := s.userRepo.GetUserByID(id)
+	if err != nil {
+		if err.Error() == "user tidak ditemukan" {
+			return errors.New("user tidak ditemukan")
+		}
+		return errors.New("terjadi kesalahan pada server")
+	}
+
+
+	exists, err := s.userRepo.CheckEmailExists(userData.Email)
+	if err != nil {
+		return errors.New("terjadi kesalahan pada server")
+	}
+
+	if exists {
+		currentUser, _ := s.userRepo.GetUserByID(id)
+		if currentUser.Email != userData.Email {
+			return errors.New("email sudah digunakan")
+		}
+	}
+
+	return s.userRepo.UpdateUser(id, userData)
+}
+
+func (s *UserService) DeleteUser(id int) error {
+	_, err := s.userRepo.GetUserByID(id)
+	if err != nil {
+		if err.Error() == "user tidak ditemukan" {
+			return errors.New("user tidak ditemukan")
+		}
+		return errors.New("terjadi kesalahan pada server")
+	}
+
+	return s.userRepo.DeleteUser(id)
+}
+
+
+

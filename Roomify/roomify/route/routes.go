@@ -19,6 +19,9 @@ func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handl
 	// Public routes
 	r.Post("/login", userhandler.Login)
 	r.Post("/user", userhandler.CreateUser)
+	r.Get("/user/search", userhandler.GetUsers)
+	r.Put("/user-put/:id", userhandler.UpdateUserHandler)
+	r.Delete("/user-del", userhandler.DeleteUserHandler)
 	r.Use(middleware.AuthMiddleware(cfg))
 
 	d := app.Group("/dept")

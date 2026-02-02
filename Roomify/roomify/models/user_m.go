@@ -11,3 +11,8 @@ type User struct {
 	DepartmentID int       `json:"department_id,omitempty"`
 	CreatedAt    time.Time `json:"created_at,omitempty"`
 }
+
+type UserFilter struct {
+	Search       string `json:"search"`
+	DepartmentID int    `json:"department_id"`
+}
