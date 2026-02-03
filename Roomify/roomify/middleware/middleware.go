@@ -10,10 +10,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// AuthMiddleware - Middleware untuk validasi token JWT
 func AuthMiddleware(cfg *config.Config) func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		// Ambil token dari header Authorization
 		tokenString := c.Get("Authorization")
 		if tokenString == "" {
 			return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
@@ -24,12 +22,9 @@ func AuthMiddleware(cfg *config.Config) func(c *fiber.Ctx) error {
 			})
 		}
 
-		// Hapus prefix "Bearer "
 		tokenString = strings.TrimPrefix(tokenString, "Bearer ")
 
-		// Parse dan validasi token
 		token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-			// Validasi signing method
 			if token.Method.Alg() != jwt.SigningMethodHS256.Name {
 				return nil, fmt.Errorf("invalid signing method")
 			}
@@ -46,13 +41,10 @@ func AuthMiddleware(cfg *config.Config) func(c *fiber.Ctx) error {
 			})
 		}
 
-		// Validasi token dan ambil claims
 		if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-			// Simpan user info ke locals untuk digunakan di handler
 			c.Locals("id", int(claims["id"].(float64)))
 			c.Locals("role", claims["role"].(string))
 
-			// Lanjut ke handler berikutnya
 			c.Next()
 			return nil
 		}
@@ -66,10 +58,8 @@ func AuthMiddleware(cfg *config.Config) func(c *fiber.Ctx) error {
 	}
 }
 
-// AdminMiddleware - Middleware untuk cek role admin
 func AdminMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
-		// Ambil role dari locals (sudah diset oleh AuthMiddleware)
 		userRole := c.Locals("role")
 		if userRole == nil {
 			return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
@@ -80,7 +70,6 @@ func AdminMiddleware() func(c *fiber.Ctx) error {
 			})
 		}
 
-		// Cek apakah role admin
 		if userRole.(string) != "admin" {
 			return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
 				Success: false,
@@ -95,7 +84,6 @@ func AdminMiddleware() func(c *fiber.Ctx) error {
 	}
 }
 
-// UserMiddleware - Middleware untuk cek role user (optional)
 func UserMiddleware() func(c *fiber.Ctx) error {
 	return func(c *fiber.Ctx) error {
 		userRole := c.Locals("role")

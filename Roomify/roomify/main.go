@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	
+
 	"github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/config"
 	"github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/handler"
 	"github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/repository"
@@ -30,6 +30,10 @@ func main() {
 	authService := service.NewAuthService(*authRepo, cfg)
 	authHandler := handler.NewAuthHandler(*authService)
 
+	lokasiRepo := repository.NewLokasiRepository(config.DB)
+	lokasiService := service.NewLokasiService(*lokasiRepo)
+	lokasiHandler := handler.NewLokasiHandler(*lokasiService)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -41,7 +45,7 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	router.Router(app, userHandler, deptHandler, authHandler)
+	router.Router(app, userHandler, deptHandler, authHandler, lokasiHandler)
 
 	log.Fatal(app.Listen("0.0.0.0:3000"))
 }

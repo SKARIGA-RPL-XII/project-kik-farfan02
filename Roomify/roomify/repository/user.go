@@ -121,7 +121,6 @@ func (r *UserRepository) GetUserByID(id int) (*models.User, error) {
 	return user, nil
 }
 
-// GetUsers - Ambil semua user dengan fitur search
 func (r *UserRepository) GetUsers(filter models.UserFilter) ([]models.User, error) {
 	query := `
 		SELECT id, name, email, password, role, department_id, created_at 
