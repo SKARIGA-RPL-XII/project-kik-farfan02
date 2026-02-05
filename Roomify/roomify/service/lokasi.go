@@ -16,9 +16,7 @@ func NewLokasiService(lokasiRepo repository.LokasiRepository) *LokasiService {
 	return &LokasiService{lokasiRepo: lokasiRepo}
 }
 
-// CreateLokasi - Create location with details
 func (s *LokasiService) CreateLokasi(lok *models.CreateLocationRequest) (int, error) {
-	// Validasi input
 	if lok.NamaLokasi == "" {
 		return 0, errors.New("nama lokasi wajib diisi")
 	}
@@ -96,7 +94,6 @@ func (s *LokasiService) UpdateDetailLokasi(id int, detail *models.DetailLocation
 	return s.lokasiRepo.UpdateDetailLokasi(id, detail)
 }
 
-// DeleteDetailLokasi - Delete detail lokasi
 func (s *LokasiService) DeleteDetailLokasi(id int) error {
 	return s.lokasiRepo.DeleteDetailLokasi(id)
 }

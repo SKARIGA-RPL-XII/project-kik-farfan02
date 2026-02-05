@@ -351,7 +351,6 @@ func (h *LokasiHandler) UpdateDetailLokasi(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteDetailLokasi - Delete detail lokasi
 func (h *LokasiHandler) DeleteDetailLokasi(c *fiber.Ctx) error {
 	type DeleteRequest struct {
 		ID int `json:"id"`

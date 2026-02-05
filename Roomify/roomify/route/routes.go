@@ -10,7 +10,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handler.DeptHandler, authHandler *handler.AuthHandler, lokasiHandler *handler.LokasiHandler) {
+func Router(app *fiber.App, 
+	userhandler *handler.UserHandler, 
+	depthandler *handler.DeptHandler, 
+	authHandler *handler.AuthHandler, 
+	lokasiHandler *handler.LokasiHandler, 
+	settingHandler *handler.SettingHandler) {
 	cfg := config.LoadConfig()
 
 	a := app.Group("/auth")
@@ -42,6 +47,13 @@ func Router(app *fiber.App, userhandler *handler.UserHandler, depthandler *handl
 	l.Delete("/lokasi-del", lokasiHandler.DeleteLokasi)
 	l.Put("/detail-put/:id", lokasiHandler.UpdateDetailLokasi)
 	l.Delete("/detail-del", lokasiHandler.DeleteDetailLokasi)
+
+	s := app.Group("/set")
+
+	s.Get("/all", settingHandler.GetAllSettings)
+	s.Get("/get-setting", settingHandler.GetSetting)
+	s.Put("/put-setting", settingHandler.UpdateSetting)
+
 
 
 	log.Fatal(app.Listen(":3000"))

@@ -34,6 +34,10 @@ func main() {
 	lokasiService := service.NewLokasiService(*lokasiRepo)
 	lokasiHandler := handler.NewLokasiHandler(*lokasiService)
 
+	settingRepo := repository.NewSettingRepository(config.DB)
+	settingService := service.NewSettingService(*settingRepo)
+	settingHandler := handler.NewSettingHandler(*settingService)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -45,7 +49,7 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	router.Router(app, userHandler, deptHandler, authHandler, lokasiHandler)
+	router.Router(app, userHandler, deptHandler, authHandler, lokasiHandler, settingHandler)
 
 	log.Fatal(app.Listen("0.0.0.0:3000"))
 }
