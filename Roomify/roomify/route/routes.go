@@ -15,7 +15,8 @@ func Router(app *fiber.App,
 	depthandler *handler.DeptHandler, 
 	authHandler *handler.AuthHandler, 
 	lokasiHandler *handler.LokasiHandler, 
-	settingHandler *handler.SettingHandler) {
+	settingHandler *handler.SettingHandler,
+	bookinghandler *handler.BookingHandler) {
 	cfg := config.LoadConfig()
 
 	a := app.Group("/auth")
@@ -54,7 +55,14 @@ func Router(app *fiber.App,
 	s.Get("/get-setting", settingHandler.GetSetting)
 	s.Put("/put-setting", settingHandler.UpdateSetting)
 
+	b := app.Group("/book")
 
+	b.Post("/booking-create", middleware.AuthMiddleware(cfg), bookinghandler.CreateBooking)
+	b.Get("/getbyid", bookinghandler.GetBookingByID)
+	b.Get("/getby-user",middleware.AuthMiddleware(cfg), bookinghandler.GetBookingsByUser)
+	b.Get("/getall", bookinghandler.GetAllBookings)
+	b.Put("/booking-put/:id", bookinghandler.UpdateBooking)
+	b.Delete("/booking-del",middleware.AuthMiddleware(cfg), bookinghandler.DeleteBooking)
 
 	log.Fatal(app.Listen(":3000"))
 

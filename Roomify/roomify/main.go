@@ -9,6 +9,7 @@ import (
 	router "github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/route"
 	service "github.com/SKARIGA-RPL-XII/project-kik-farfan02/Roomify/roomify/service"
 
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -38,6 +39,10 @@ func main() {
 	settingService := service.NewSettingService(*settingRepo)
 	settingHandler := handler.NewSettingHandler(*settingService)
 
+	bookingRepo := repository.NewBookingRepository(config.DB)
+	bookingService := service.NewBookingService(*bookingRepo, *settingService, *userRepo, cfg)
+	bookingHandler := handler.NewBookingHandler(*bookingService)
+
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
@@ -49,7 +54,7 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New())
 
-	router.Router(app, userHandler, deptHandler, authHandler, lokasiHandler, settingHandler)
+	router.Router(app, userHandler, deptHandler, authHandler, lokasiHandler, settingHandler, bookingHandler)
 
 	log.Fatal(app.Listen("0.0.0.0:3000"))
 }
